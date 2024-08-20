@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using Item.Data;
+using UnityEngine;
 namespace Item
 {
     public interface IItem
     {
         Transform Transform { get; }
-        void SetSprite(Sprite icon);
+        ItemType Type { get; }
+        void SetItemData(ItemData itemData);
         void Show();
         void Hide();
         void SetPosition(Vector3 position);

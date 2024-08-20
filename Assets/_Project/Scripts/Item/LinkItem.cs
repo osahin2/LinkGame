@@ -1,27 +1,14 @@
-﻿using UnityEngine;
+﻿using Item.Data;
+using UnityEngine;
 namespace Item
 {
-    public class LinkItem : MonoBehaviour, IItem
+    public class LinkItem : ItemBase
     {
         [SerializeField] private SpriteRenderer _renderer;
-        public Transform Transform => transform;
-
-        public void SetSprite(Sprite icon)
+        public override void SetItemData(ItemData itemData)
         {
-            _renderer.sprite = icon;
-        }
-        public void Show()
-        {
-            gameObject.SetActive(true);
-        }
-        public void Hide()
-        {
-            gameObject.SetActive(false);
-        }
-
-        public void SetPosition(Vector3 position)
-        {
-            transform.position = position;
+            base.SetItemData(itemData);
+            _renderer.sprite = itemData.Icon;
         }
     }
 }
