@@ -9,10 +9,12 @@ namespace Item
         protected ItemData ItemData;
         public Transform Transform => transform;
         public ItemType Type => _itemType;
+        public int ID {  get; private set; }
 
         public virtual void SetItemData(ItemData itemData)
         {
             ItemData = itemData;
+            ID = itemData.ID;
         }
         public void Show()
         {

@@ -2,6 +2,7 @@
 using Item;
 using Item.Data;
 using Item.Factory;
+using Link;
 using UnityEngine;
 namespace App
 {
@@ -10,6 +11,7 @@ namespace App
         private GameBoard _gameBoard;
         private ItemsContainer _itemContainer;
         private IItemFactory _itemFactory;
+        private LinkController _linkController;
         public void Construct(GameBoard gameBoard, IItemFactory itemFactory, ItemsContainer itemContainer)
         {
             _gameBoard = gameBoard;
@@ -18,8 +20,11 @@ namespace App
         }
         public void Init()
         {
+            _linkController = new LinkController();
+
             _gameBoard.Init();
             FillBoard();
+            _linkController.Init();
         }
         public void DeInit()
         {
