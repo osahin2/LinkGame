@@ -2,7 +2,7 @@ using Extensions;
 using UnityEngine;
 namespace Grid
 {
-    public class GameBoard : IGameBoard
+    public class GameBoard : MonoBehaviour, IGameBoard
     {
         [SerializeField] private int _gridWidth;
         [SerializeField] private int _gridHeight;
