@@ -1,29 +1,30 @@
 ﻿using Extensions;
 using Grid;
 using Inputs;
-using Item;
 using Service_Locator;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Link
 {
-    public class LinkController
+    public class LinkSolver : ILinkSolver
     {
+        public event Action<IEnumerable<IGridSlot>> OnItemsLinked;
+
         private IInputSystem _inputSystem;
         private IGameBoard _gameBoard;
 
-        private LinkedList<IItem> _linkedItems = new();
-        private LinkedListNode<IItem> _currentNode = null;
+        private LinkedList<IGridSlot> _linkedItems = new();
+        private LinkedListNode<IGridSlot> _currentNode = null;
 
         private int _minLinkCount = 3;
         private int _linkCounter;
 
-        public LinkController()
+        public LinkSolver(IGameBoard gameBoard, IInputSystem inputSystem)
         {
-            ServiceProvider.Instance
-                .Get(out _inputSystem)
-                .Get(out _gameBoard);
+            _gameBoard = gameBoard;
+            _inputSystem = inputSystem;
         }
         public void Init()
         {
@@ -35,14 +36,14 @@ namespace Link
         }
         private void AddNewLink(IGridSlot gridSlot)
         {
-            if (_currentNode.Value == gridSlot.Item)
+            if (_currentNode.Value == gridSlot)
             {
                 return;
             }
 
-            if (_currentNode.Value.ID == gridSlot.Item.ID && !_linkedItems.Contains(gridSlot.Item))
+            if (_currentNode.Value.Item.ID == gridSlot.Item.ID && !_linkedItems.Contains(gridSlot))
             {
-                _currentNode = _linkedItems.AddLast(gridSlot.Item);
+                _currentNode = _linkedItems.AddLast(gridSlot);
                 _linkCounter++;
             }
         }
@@ -51,18 +52,11 @@ namespace Link
             if (_currentNode.Previous == null)
                 return;
 
-            if (_currentNode.Previous.Value == gridSlot.Item)
+            if (_currentNode.Previous.Value == gridSlot)
             {
                 _currentNode = _currentNode.Previous;
                 _linkedItems.RemoveLast();
                 _linkCounter--;
-            }
-        }
-        private void ClearLinkedNodes()
-        {
-            foreach (var item in _linkedItems)
-            {
-                item.Hide();
             }
         }
         private void Reset()
@@ -87,7 +81,7 @@ namespace Link
             {
                 return;
             }
-            _currentNode = _linkedItems.AddFirst(gridSlot.Item);
+            _currentNode = _linkedItems.AddFirst(gridSlot);
             _linkCounter++;
         }
         private void OnPointerDragHandler(object sender, InputEventArgs args)
@@ -104,7 +98,7 @@ namespace Link
         {
             if (_linkCounter >= _minLinkCount)
             {
-                ClearLinkedNodes();
+                OnItemsLinked?.Invoke(_linkedItems);
             }
             Reset();
         }
