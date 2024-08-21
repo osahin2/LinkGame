@@ -1,4 +1,5 @@
-﻿using Grid;
+﻿using BoardSolvers;
+using Grid;
 using Item;
 using Item.Data;
 using Item.Factory;
@@ -11,20 +12,19 @@ namespace App
         private GameBoard _gameBoard;
         private ItemsContainer _itemContainer;
         private IItemFactory _itemFactory;
-        private LinkController _linkController;
-        public void Construct(GameBoard gameBoard, IItemFactory itemFactory, ItemsContainer itemContainer)
+        private BoardSolver _boardSolver;
+        public void Construct(GameBoard gameBoard, IItemFactory itemFactory, ItemsContainer itemContainer, BoardSolver boardSolver)
         {
             _gameBoard = gameBoard;
             _itemFactory = itemFactory;
             _itemContainer = itemContainer;
+            _boardSolver = boardSolver;
         }
         public void Init()
         {
-            _linkController = new LinkController();
-
             _gameBoard.Init();
             FillBoard();
-            _linkController.Init();
+            _boardSolver.Init();
         }
         public void DeInit()
         {
