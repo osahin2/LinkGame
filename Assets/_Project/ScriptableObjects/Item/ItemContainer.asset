@@ -17,3 +17,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d15069479b58f6e43ae6b995abe5ba74, type: 2}
   - {fileID: 11400000, guid: 5c194159f3911ef4394f99bd0ca3a76c, type: 2}
   - {fileID: 11400000, guid: 3c72fe874c6a9ba49b4c089f2e11743a, type: 2}
+  <Settings>k__BackingField: {fileID: 11400000, guid: f8444add7e0f3134fa2ee70c344674f1, type: 2}
