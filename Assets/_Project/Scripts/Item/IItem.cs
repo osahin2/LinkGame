@@ -1,4 +1,5 @@
 ﻿using Item.Data;
+using System;
 using UnityEngine;
 namespace Item
 {
@@ -11,5 +12,8 @@ namespace Item
         void Show();
         void Hide();
         void SetPosition(Vector3 position);
+        void Select();
+        void DeSelect();
+        void Pop(Action onComplete = null);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Item.Data;
+﻿using DG.Tweening;
+using Item.Data;
+using System;
 using UnityEngine;
 namespace Item
 {
@@ -7,9 +9,14 @@ namespace Item
         [SerializeField] private ItemType _itemType;
 
         protected ItemData ItemData;
+        private ItemSettings Settings => ItemData.Settings;
         public Transform Transform => transform;
         public ItemType Type => _itemType;
         public int ID {  get; private set; }
+
+        private Tween _scaleUpTween;
+        private Tween _scaleDownTween;
+        private Tween _popTween;
 
         public virtual void SetItemData(ItemData itemData)
         {
@@ -18,6 +25,7 @@ namespace Item
         }
         public void Show()
         {
+            ResetItem();
             gameObject.SetActive(true);
         }
         public void Hide()
@@ -29,5 +37,33 @@ namespace Item
         {
             transform.position = position;
         }
+
+        public virtual void Select()
+        {
+            _scaleUpTween = transform.DOScale(Vector3.one * Settings.LinkedScale, Settings.LinkedAnimTime)
+                .SetEase(Ease.OutBack);
+        }
+        public virtual void DeSelect()
+        {
+            _scaleUpTween?.Kill();
+            _scaleDownTween = transform.DOScale(Vector3.one, Settings.LinkedAnimTime)
+                .SetEase(Ease.InBack);
+        }
+
+        public virtual void Pop(Action onComplete = null)
+        {
+            _scaleUpTween?.Kill();
+            _popTween = transform.DOScale(Vector3.zero, Settings.LinkedAnimTime)
+                .SetEase(Ease.InBack)
+                .OnComplete(() =>
+                {
+                    onComplete?.Invoke();
+                });
+        }
+        private void ResetItem()
+        {
+            transform.localScale = Vector3.one;
+        }
+
     }
 }
