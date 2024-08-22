@@ -4,6 +4,6 @@ namespace BoardSolvers
 {
     public interface IFill
     {
-        void Fill(IEnumerable<IGridSlot> solvedGrids);
+        void Fill(IEnumerable<IGridSlot> solvedGrids = null);
     }
 }

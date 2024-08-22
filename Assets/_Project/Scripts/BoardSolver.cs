@@ -7,17 +7,20 @@ namespace BoardSolvers
     public class BoardSolver
     {
         private ILinkSolver _linkSolver;
-        private IFill _fillSolver;
+        private IFill _fallDownFill;
+        private IFill _onSetFill;
         private IItemFactory _itemFactory;
-        public BoardSolver(ILinkSolver linkSolver, IFill fill, IItemFactory itemFactory)
+        public BoardSolver(ILinkSolver linkSolver, IFill fill, IItemFactory itemFactory, IFill onSetFill)
         {
             _linkSolver = linkSolver;
-            _fillSolver = fill;
+            _fallDownFill = fill;
             _itemFactory = itemFactory;
+            _onSetFill = onSetFill;
         }
         public void Init()
         {
             _linkSolver.Init();
+            _onSetFill.Fill();
             AddEvents();
         }
         public void DeInit()
@@ -38,7 +41,7 @@ namespace BoardSolvers
         private void OnItemsLinkedHandler(IEnumerable<IGridSlot> gridSlots)
         {
             ClearLinkedItems(gridSlots);
-            _fillSolver.Fill(gridSlots);
+            _fallDownFill.Fill(gridSlots);
         }
         private void AddEvents()
         {
