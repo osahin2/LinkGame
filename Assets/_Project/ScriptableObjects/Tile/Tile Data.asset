@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be9e1ebc7b9d16749ac56e34d3e13ec0, type: 3}
-  m_Name: LinkItemPoolFactory
+  m_Script: {fileID: 11500000, guid: e636be58e1934704196f1da8bb695316, type: 3}
+  m_Name: Tile Data
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 2876140657723100358, guid: 4030831cdefbd2d4ca1cea8614600093, type: 3}
-  _initialSpawnCount: 64
+  <Icon>k__BackingField: {fileID: 21300000, guid: 1f20ca65a0ccdf44791060c0fddd30f4, type: 3}
