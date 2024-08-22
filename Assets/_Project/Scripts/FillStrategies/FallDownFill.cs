@@ -46,8 +46,10 @@ namespace BoardSolvers
                     gridSlot.Clear();
                     _gameBoard[targetPos].SetItem(item);
                     var distance = gridSlot.GridPosition.y - targetPos.y;
-                    fallSeq.Join(
-                        item.Transform.DOMove(_gameBoard.GridToWorldCenter(targetPos), distance / 12f));
+                    fallSeq.Join(item.Transform.DOMove
+                        (_gameBoard.GridToWorldCenter(targetPos),
+                            distance / _itemsContainer.Settings.FallSpeed)
+                        .SetEase(_itemsContainer.Settings.FallEase));
                 }
             }
         }
@@ -76,10 +78,11 @@ namespace BoardSolvers
                     emptyGrid.SetItem(item);
 
                     var distance = spawnGridPosition.y - emptyGrid.GridPosition.y;
-                    fillSeq.AppendCallback(()=>
-                        item.Transform.DOMove(_gameBoard.GridToWorldCenter(emptyGrid.GridPosition), distance / 12f)
-                        .SetEase(Ease.Linear))
-                        .AppendInterval(.1f);
+                    fillSeq.AppendCallback(()=> item.Transform.DOMove
+                        (_gameBoard.GridToWorldCenter(emptyGrid.GridPosition),
+                            distance / _itemsContainer.Settings.FallSpeed)
+                        .SetEase(_itemsContainer.Settings.FallEase))
+                        .AppendInterval(_itemsContainer.Settings.FillInterval);
                 }
             }
             foreach (var seq in seqList)
@@ -111,13 +114,12 @@ namespace BoardSolvers
         private List<IGridSlot> FindEmptySlotsOnColumn(IGridSlot slot)
         {
             var emptySlots = new List<IGridSlot>();
-            for (int i = _gameBoard.Height - 1; i >= 0; i--)
+            for (int i = 0; i < _gameBoard.Height; i++)
             {
                 var targetSlot = _gameBoard[slot.GridPosition.x, i];
                 if (!targetSlot.HasItem)
                     emptySlots.Add(targetSlot);
             }
-            emptySlots.Reverse();
             return emptySlots;
         }
     }
