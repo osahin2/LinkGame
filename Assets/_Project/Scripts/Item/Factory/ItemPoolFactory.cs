@@ -1,39 +1,20 @@
-﻿using Pool;
+﻿using Factory;
 using UnityEngine;
 namespace Item.Factory
 {
+
     [CreateAssetMenu(fileName = "ItemPoolFactory", menuName = "Item/Item Pool Factory")]
-    public class ItemPoolFactory : ScriptableObject
+    public class ItemPoolFactory : MonoPoolFactory<ItemBase, IItem>
     {
-        [SerializeField] private ItemBase _item;
-        [SerializeField] private int _initialSpawnCount;
+        public ItemType ItemType => Prefab.Type;
 
-        private IPooler<IItem> _pooler;
-        public ItemType ItemType => _item.Type;
-
-        private Transform _spawnParent;
-        public void Construct(Transform spawnParent)
+        protected override void OnConstructed()
         {
-            _spawnParent = spawnParent;
-
-            _pooler = new Pooler<IItem>.Builder(CreateFunc)
-                .WithInitialCount(_initialSpawnCount)
+            Pooler = GetPoolerBuilder()
                 .WithOnInitialSpawn(OnInitiallySpawned)
                 .Build();
         }
-        public IItem Get()
-        {
-            return _pooler.GetPooled();
-        }
-        public void Free(IItem item)
-        {
-            _pooler.Free(item);
-        }
-        private IItem CreateFunc()
-        {
-            var item = Instantiate(_item, _spawnParent);
-            return item;
-        }
+
         private void OnInitiallySpawned(IItem item)
         {
             item.Hide();

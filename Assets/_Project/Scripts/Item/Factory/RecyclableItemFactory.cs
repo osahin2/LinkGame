@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Factory;
+using System.Collections.Generic;
 using UnityEngine;
 namespace Item.Factory
 {
@@ -37,7 +38,7 @@ namespace Item.Factory
         {
             if (!_factoriesDict.TryGetValue(itemType, out var factory))
             {
-                throw new KeyNotFoundException($"{itemType} Not Found In Factory Dictionary");
+                throw new KeyNotFoundException($"RecyclableItemFactory: {itemType} Not Found In Factory Dictionary");
             }
             return factory;
         }
