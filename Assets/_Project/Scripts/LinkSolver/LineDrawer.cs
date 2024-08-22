@@ -51,19 +51,19 @@ namespace Link
         }
         private Directions FindDirection(Vector2Int gridPos, Vector2Int neighbour)
         {
-            var gridDirections = GetDirections(gridPos);
-            foreach (var direction in gridDirections)
+            var gridDirections = GetNeighbourDirections(gridPos);
+            foreach (var (direction, directionType) in gridDirections)
             {
-                var vector = direction.vector;
+                var vector = direction;
                 if (vector == neighbour)
                 {
-                    return direction.directionEnum;
+                    return directionType;
                 }
             }
             Debug.LogError("LineDrawer: Direction Not Found");
             return Directions.None;
         }
-        private List<(Vector2Int vector, Directions directionEnum)> GetDirections(Vector2Int gridPos)
+        private List<(Vector2Int direction, Directions directionType)> GetNeighbourDirections(Vector2Int gridPos)
         {
             return new()
             {
