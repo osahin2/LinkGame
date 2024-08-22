@@ -19,8 +19,9 @@ namespace Link
         private LinkedList<IGridSlot> _linkedItems = new();
         private LinkedListNode<IGridSlot> _currentNode = null;
 
-        private int _minLinkCount = 3;
         private int _linkCounter;
+
+        private const int MIN_LINK_COUNT = 3;
 
         public LinkController(IGameBoard gameBoard, IInputSystem inputSystem, LineDrawer lineDrawer)
         {
@@ -38,6 +39,13 @@ namespace Link
         }
         private void AddNewLink(IGridSlot gridSlot)
         {
+            var previousNode = _currentNode;
+
+            if (!CheckIfNeighbour(previousNode.Value.GridPosition, gridSlot.GridPosition))
+            {
+                return;
+            }
+
             if (_currentNode.Value == gridSlot)
             {
                 return;
@@ -45,7 +53,6 @@ namespace Link
 
             if (_currentNode.Value.Item.ID == gridSlot.Item.ID && !_linkedItems.Contains(gridSlot))
             {
-                var previousNode = _currentNode;
                 _lineDrawer.DrawNewLine(previousNode.Value.GridPosition, gridSlot.GridPosition);
 
                 _currentNode = _linkedItems.AddLast(gridSlot);
@@ -66,6 +73,31 @@ namespace Link
                 _linkCounter--;
                 _lineDrawer.EraseLastLine();
             }
+        }
+        private bool CheckIfNeighbour(Vector2Int grid, Vector2Int neighbour)
+        {
+            foreach (var direction in GetDirections(grid))
+            {
+                if(direction == neighbour)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private List<Vector2Int> GetDirections(Vector2Int grid)
+        {
+            return new()
+            {
+                grid.Up(),
+                grid.Down(),
+                grid.Left(),
+                grid.Right(),
+                grid.UpLeft(),
+                grid.DownLeft(),
+                grid.UpRight(),
+                grid.DownRight(),
+            };
         }
         private bool TryGetGridSlot(Vector2 worldPos, out IGridSlot gridSlot)
         {
@@ -114,7 +146,7 @@ namespace Link
         }
         private void OnPointerUpHandler(object sender, InputEventArgs args)
         {
-            if (_linkCounter >= _minLinkCount)
+            if (_linkCounter >= MIN_LINK_COUNT)
             {
                 OnItemsLinked?.Invoke(_linkedItems);
             }
