@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Link
 {
-    public interface ILinkSolver
+    public interface ILinkController
     {
         event Action<IEnumerable<IGridSlot>> OnItemsLinked;
         void Init();

@@ -1,19 +1,20 @@
-﻿using Extensions;
+﻿using App;
+using Extensions;
 using Grid;
 using Inputs;
-using Service_Locator;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Link
 {
-    public class LinkSolver : ILinkSolver
+    public class LinkController : ILinkController
     {
         public event Action<IEnumerable<IGridSlot>> OnItemsLinked;
 
         private IInputSystem _inputSystem;
         private IGameBoard _gameBoard;
+        private LineDrawer _lineDrawer;
 
         private LinkedList<IGridSlot> _linkedItems = new();
         private LinkedListNode<IGridSlot> _currentNode = null;
@@ -21,10 +22,11 @@ namespace Link
         private int _minLinkCount = 3;
         private int _linkCounter;
 
-        public LinkSolver(IGameBoard gameBoard, IInputSystem inputSystem)
+        public LinkController(IGameBoard gameBoard, IInputSystem inputSystem, LineDrawer lineDrawer)
         {
             _gameBoard = gameBoard;
             _inputSystem = inputSystem;
+            _lineDrawer = lineDrawer;
         }
         public void Init()
         {
@@ -43,8 +45,12 @@ namespace Link
 
             if (_currentNode.Value.Item.ID == gridSlot.Item.ID && !_linkedItems.Contains(gridSlot))
             {
+                var previousNode = _currentNode;
+                _lineDrawer.DrawNewLine(previousNode.Value.GridPosition, gridSlot.GridPosition);
+
                 _currentNode = _linkedItems.AddLast(gridSlot);
                 _linkCounter++;
+                gridSlot.Item.Select();
             }
         }
         private void RemoveLastLinked(IGridSlot gridSlot)
@@ -54,16 +60,12 @@ namespace Link
 
             if (_currentNode.Previous.Value == gridSlot)
             {
+                _currentNode.Value.Item.DeSelect();
                 _currentNode = _currentNode.Previous;
                 _linkedItems.RemoveLast();
                 _linkCounter--;
+                _lineDrawer.EraseLastLine();
             }
-        }
-        private void Reset()
-        {
-            _linkedItems.Clear();
-            _currentNode = null;
-            _linkCounter = 0;
         }
         private bool TryGetGridSlot(Vector2 worldPos, out IGridSlot gridSlot)
         {
@@ -75,6 +77,20 @@ namespace Link
             gridSlot = _gameBoard[gridPos];
             return true;
         }
+        private void ResetAllSelectedItems()
+        {
+            foreach (var slot in _linkedItems)
+            {
+                slot.Item.DeSelect();
+            }
+        }
+        private void Reset()
+        {
+            _linkedItems.Clear();
+            _currentNode = null;
+            _linkCounter = 0;
+            _lineDrawer.ResetLineRenderer();
+        }
         private void OnPointerDownHandler(object sender, InputEventArgs args)
         {
             if (!TryGetGridSlot(args.WorldPosition, out var gridSlot))
@@ -83,6 +99,8 @@ namespace Link
             }
             _currentNode = _linkedItems.AddFirst(gridSlot);
             _linkCounter++;
+            gridSlot.Item.Select();
+            _lineDrawer.SetPosition(_gameBoard.GridToWorldCenter(gridSlot.GridPosition));
         }
         private void OnPointerDragHandler(object sender, InputEventArgs args)
         {
@@ -99,6 +117,10 @@ namespace Link
             if (_linkCounter >= _minLinkCount)
             {
                 OnItemsLinked?.Invoke(_linkedItems);
+            }
+            else
+            {
+                ResetAllSelectedItems();
             }
             Reset();
         }
