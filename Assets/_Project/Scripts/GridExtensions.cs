@@ -20,6 +20,22 @@ namespace Extensions
         {
             return value + Vector2Int.down;
         }
+        public static Vector2Int UpRight(this Vector2Int value)
+        {
+            return value + (Vector2Int.up + Vector2Int.right);
+        }
+        public static Vector2Int UpLeft(this Vector2Int value)
+        {
+            return value + (Vector2Int.left + Vector2Int.up);
+        }
+        public static Vector2Int DownRight(this Vector2Int value)
+        {
+            return value + (Vector2Int.right + Vector2Int.down);
+        }
+        public static Vector2Int DownLeft(this Vector2Int value)
+        {
+            return value + (Vector2Int.left + Vector2Int.down);
+        }
         public static bool IsPositionOnGrid(this Vector2Int gridPosition, int width, int heigth)
         {
             return gridPosition.x >= 0 &&

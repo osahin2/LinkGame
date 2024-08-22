@@ -6,11 +6,11 @@ namespace BoardSolvers
 {
     public class BoardSolver
     {
-        private ILinkSolver _linkSolver;
+        private ILinkController _linkSolver;
         private IFill _fallDownFill;
         private IFill _onSetFill;
         private IItemFactory _itemFactory;
-        public BoardSolver(ILinkSolver linkSolver, IFill fill, IItemFactory itemFactory, IFill onSetFill)
+        public BoardSolver(ILinkController linkSolver, IFill fill, IItemFactory itemFactory, IFill onSetFill)
         {
             _linkSolver = linkSolver;
             _fallDownFill = fill;
@@ -34,8 +34,11 @@ namespace BoardSolvers
             {
                 var item = slot.Item;
                 slot.Clear();
-                _itemFactory.Release(item);
-                item.Hide();
+                item.Pop(onComplete:() =>
+                {
+                    item.Hide();
+                    _itemFactory.Release(item);
+                });
             }
         }
         private void OnItemsLinkedHandler(IEnumerable<IGridSlot> gridSlots)
