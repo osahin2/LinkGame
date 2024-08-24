@@ -39,7 +39,7 @@ namespace Link
         {
             var previousNode = _currentNode;
 
-            if (!CheckIfNeighbour(previousNode.Value.GridPosition, gridSlot.GridPosition))
+            if (!previousNode.Value.GridPosition.CheckIfNeighbour(gridSlot.GridPosition))
             {
                 return;
             }
@@ -71,17 +71,6 @@ namespace Link
                 _linkCounter--;
                 _lineDrawer.EraseLastLine();
             }
-        }
-        private bool CheckIfNeighbour(Vector2Int grid, Vector2Int neighbour)
-        {
-            foreach (var direction in grid.GetDirections())
-            {
-                if (direction == neighbour)
-                {
-                    return true;
-                }
-            }
-            return false;
         }
         private bool TryGetGridSlot(Vector2 worldPos, out IGridSlot gridSlot)
         {

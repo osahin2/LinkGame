@@ -71,22 +71,23 @@ namespace BoardSolvers
                     {
                         continue;
                     }
-
+                    int currentIndex;
                     if (AnyExistInLinks(_gameBoard[direction], out var index))
                     {
                         AddLink(slot.GridPosition, direction, index);
-                        if (_links[index].Count >= _linkController.MinLinkCount)
-                        {
-                            return true;
-                        }
-                        continue;
+                        currentIndex = index;
                     }
-                    AddLink(slot.GridPosition, direction, _matchIndex);
-                    if (_links[_matchIndex].Count >= _linkController.MinLinkCount)
+                    else
+                    {
+                        AddLink(slot.GridPosition, direction, _matchIndex);
+                        currentIndex = _matchIndex;
+                        _matchIndex++;
+                    }
+                    if (_links[currentIndex].Count >= _linkController.MinLinkCount)
                     {
                         return true;
                     }
-                    _matchIndex++;
+
                 }
             }
             return false;
@@ -105,16 +106,23 @@ namespace BoardSolvers
             for (int i = 0; i < _links.Length; i++)
             {
                 HashSet<IGridSlot> set = _links[i];
+
                 if (set == null)
                 {
                     continue;
                 }
+
                 foreach (var slot in set)
                 {
+                    if (!gridSlot.GridPosition.CheckIfNeighbour(slot.GridPosition))
+                    {
+                        continue;
+                    }
                     if (slot.Item.ID != gridSlot.Item.ID)
                     {
                         continue;
                     }
+
                     index = i;
                     return true;
                 }

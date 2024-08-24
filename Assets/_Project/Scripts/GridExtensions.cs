@@ -37,6 +37,17 @@ namespace Extensions
         {
             return value + (Vector2Int.left + Vector2Int.down);
         }
+        public static bool CheckIfNeighbour(this Vector2Int grid, Vector2Int neighbour)
+        {
+            foreach (var direction in grid.GetDirections())
+            {
+                if (direction == neighbour)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public static List<Vector2Int> GetDirections(this Vector2Int value)
         {
             return new()
