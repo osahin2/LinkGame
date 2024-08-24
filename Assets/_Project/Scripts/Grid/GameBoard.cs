@@ -1,4 +1,5 @@
 using Extensions;
+using System.Collections.Generic;
 using UnityEngine;
 namespace Grid
 {
@@ -14,6 +15,7 @@ namespace Grid
         public int Height => _gridHeight;
         public IGridSlot this[int width, int heigth] => _gridSlots[width, heigth];
         public IGridSlot this[Vector2Int position] => _gridSlots[position.x, position.y];
+        public List<IGridSlot> GridSlots1D { get; private set; } = new();
 
         private Vector3 _origin;
 
@@ -42,6 +44,7 @@ namespace Grid
                 {
                     var gridSlot = new GridSlot(new Vector2Int(x, y));
                     _gridSlots[x, y] = gridSlot;
+                    GridSlots1D.Add(gridSlot);
                 }
             }
         }

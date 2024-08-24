@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 namespace Grid
 {
     public interface IGameBoard
     {
         public IGridSlot this[int row, int column] { get; }
         public IGridSlot this[Vector2Int position] { get; }
+        public List<IGridSlot> GridSlots1D { get; }
         public int Width { get; }
         public int Height { get; }
 
