@@ -3,6 +3,7 @@ using Item;
 using Item.Data;
 using Item.Factory;
 using Level;
+using System;
 using System.Collections.Generic;
 using Tile.Factory;
 namespace BoardSolvers
@@ -20,7 +21,7 @@ namespace BoardSolvers
             _tileFactory = tileFactory;
             _level = level;
         }
-        public void Fill(IEnumerable<IGridSlot> solvedGrids)
+        public void Fill(IEnumerable<IGridSlot> solvedGrids, Action onCompleted)
         {
             for (int row = 0; row < _gameBoard.Width; row++)
             {

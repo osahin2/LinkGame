@@ -4,9 +4,13 @@ using Grid;
 using Item.Data;
 using Item.Factory;
 using Level;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 namespace BoardSolvers
 {
     public class FallDownFill : IFill
@@ -23,10 +27,10 @@ namespace BoardSolvers
             _itemsContainer = container;
             _level = level;
         }
-        public void Fill(IEnumerable<IGridSlot> solvedGrids)
+        public void Fill(IEnumerable<IGridSlot> solvedGrids, Action onCompleted)
         {
             FallItems(solvedGrids);
-            FillNewItems(solvedGrids);
+            FillNewItems(solvedGrids, onCompleted);
         }
         private void FallItems(IEnumerable<IGridSlot> solvedGrids)
         {
@@ -55,10 +59,10 @@ namespace BoardSolvers
                 }
             }
         }
-        private void FillNewItems(IEnumerable<IGridSlot> solvedGrids)
+        private async void FillNewItems(IEnumerable<IGridSlot> solvedGrids, Action onCompleted)
         {
             var seqList = new List<Sequence>();
-
+            var tasks = new List<Task>();
             foreach (var grid in solvedGrids)
             {
                 var fillSeq = DOTween.Sequence();
@@ -90,8 +94,10 @@ namespace BoardSolvers
             }
             foreach (var seq in seqList)
             {
-                seq.Play();
+                tasks.Add(seq.Play().AsyncWaitForCompletion());
             }
+            await Task.WhenAll(tasks);
+            onCompleted?.Invoke();
         }
         private bool CanDropDown(IGridSlot slot, out Vector2Int pos)
         {

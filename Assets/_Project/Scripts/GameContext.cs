@@ -22,6 +22,7 @@ namespace App
         [Header("Data")]
         [SerializeField] private ItemsContainer _itemContainer;
         [SerializeField] private List<LevelData> _levelDatas = new();
+        [SerializeField] private int _minLinkCount;
 
         [Header("Item Factories")]
         [SerializeField] private List<ItemPoolFactory> _itemPoolFactories = new();
@@ -44,12 +45,12 @@ namespace App
             _levelController = new LevelController(_levelDatas);
             _itemFactory = new RecyclableItemFactory(_itemPoolFactories);
             _tileFactory = new RecyclableTileFactory(_tilePoolFactories);
-            _linkController = new LinkController(_gameBoard, _inputSystem, _lineDrawer);
+            _linkController = new LinkController(_gameBoard, _inputSystem, _lineDrawer, _minLinkCount);
             _fallDownFill = new FallDownFill(_gameBoard, _itemFactory, _itemContainer, _levelController);
             _onSetFill = new OnSetFill(_gameBoard, _itemFactory, _tileFactory, _levelController);
-            _boardSolver = new BoardSolver(_linkController, _fallDownFill, _itemFactory, _onSetFill);
+            _boardSolver = new BoardSolver(_gameBoard, _linkController, _fallDownFill, _itemFactory, _onSetFill);
 
-            Gameplay.Construct(_gameBoard, _boardSolver);
+            Gameplay.Construct(_gameBoard, _boardSolver, _levelController);
         }
         public void RegisterInstances()
         {

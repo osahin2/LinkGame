@@ -1,5 +1,8 @@
 ﻿using BoardSolvers;
 using Grid;
+using Item.Data;
+using Level;
+using System;
 using UnityEngine;
 namespace App
 {
@@ -7,14 +10,17 @@ namespace App
     {
         private GameBoard _gameBoard;
         private BoardSolver _boardSolver;
-        public void Construct(GameBoard gameBoard, BoardSolver boardSolver)
+        private ILevel _level;
+        public void Construct(GameBoard gameBoard, BoardSolver boardSolver, ILevel level)
         {
             _gameBoard = gameBoard;
             _boardSolver = boardSolver;
+            _level = level;
         }
         public void Init()
         {
-            _gameBoard.Init();
+            var levelData = _level.GetLevelData();
+            _gameBoard.Init(levelData.GridWidth, levelData.GridHeight);
             _boardSolver.Init();
         }
         public void DeInit()

@@ -14,19 +14,18 @@ namespace Link
         private IInputSystem _inputSystem;
         private IGameBoard _gameBoard;
         private LineDrawer _lineDrawer;
+        public int MinLinkCount { get; }
 
         private LinkedList<IGridSlot> _linkedItems = new();
         private LinkedListNode<IGridSlot> _currentNode = null;
-
         private int _linkCounter;
-
-        private const int MIN_LINK_COUNT = 3;
-
-        public LinkController(IGameBoard gameBoard, IInputSystem inputSystem, LineDrawer lineDrawer)
+        private bool _canDrag;
+        public LinkController(IGameBoard gameBoard, IInputSystem inputSystem, LineDrawer lineDrawer, int linkCount)
         {
             _gameBoard = gameBoard;
             _inputSystem = inputSystem;
             _lineDrawer = lineDrawer;
+            MinLinkCount = linkCount;
         }
         public void Init()
         {
@@ -114,6 +113,7 @@ namespace Link
             {
                 return;
             }
+            _canDrag = true;
             _currentNode = _linkedItems.AddFirst(gridSlot);
             _linkCounter++;
             gridSlot.Item.Select();
@@ -121,6 +121,10 @@ namespace Link
         }
         private void OnPointerDragHandler(object sender, InputEventArgs args)
         {
+            if (!_canDrag)
+            {
+                return;
+            }
             if (!TryGetGridSlot(args.WorldPosition, out var gridSlot))
             {
                 return;
@@ -131,7 +135,7 @@ namespace Link
         }
         private void OnPointerUpHandler(object sender, InputEventArgs args)
         {
-            if (_linkCounter >= MIN_LINK_COUNT)
+            if (_linkCounter >= MinLinkCount)
             {
                 OnItemsLinked?.Invoke(_linkedItems);
             }
@@ -139,6 +143,7 @@ namespace Link
             {
                 ResetAllSelectedItems();
             }
+            _canDrag = false;
             Reset();
         }
         private void AddEvents()
