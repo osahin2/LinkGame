@@ -1,5 +1,4 @@
-﻿using App;
-using Extensions;
+﻿using Extensions;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,7 +42,7 @@ namespace Link
         }
         private Vector3 GetDirection(Directions direction)
         {
-            if(!_directionDict.TryGetValue(direction, out var directionVector))
+            if (!_directionDict.TryGetValue(direction, out var directionVector))
             {
                 throw new KeyNotFoundException($"LineDrawer: {direction} Not Found In Dictionary");
             }

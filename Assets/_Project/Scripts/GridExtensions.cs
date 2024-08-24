@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Extensions
@@ -35,6 +36,20 @@ namespace Extensions
         public static Vector2Int DownLeft(this Vector2Int value)
         {
             return value + (Vector2Int.left + Vector2Int.down);
+        }
+        public static List<Vector2Int> GetDirections(this Vector2Int value)
+        {
+            return new()
+            {
+                value.Up(),
+                value.Down(),
+                value.Left(),
+                value.Right(),
+                value.UpLeft(),
+                value.DownLeft(),
+                value.UpRight(),
+                value.DownRight(),
+            };
         }
         public static bool IsPositionOnGrid(this Vector2Int gridPosition, int width, int heigth)
         {

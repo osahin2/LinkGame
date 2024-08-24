@@ -1,5 +1,4 @@
-﻿using App;
-using Extensions;
+﻿using Extensions;
 using Grid;
 using Inputs;
 using System;
@@ -76,28 +75,14 @@ namespace Link
         }
         private bool CheckIfNeighbour(Vector2Int grid, Vector2Int neighbour)
         {
-            foreach (var direction in GetDirections(grid))
+            foreach (var direction in grid.GetDirections())
             {
-                if(direction == neighbour)
+                if (direction == neighbour)
                 {
                     return true;
                 }
             }
             return false;
-        }
-        private List<Vector2Int> GetDirections(Vector2Int grid)
-        {
-            return new()
-            {
-                grid.Up(),
-                grid.Down(),
-                grid.Left(),
-                grid.Right(),
-                grid.UpLeft(),
-                grid.DownLeft(),
-                grid.UpRight(),
-                grid.DownRight(),
-            };
         }
         private bool TryGetGridSlot(Vector2 worldPos, out IGridSlot gridSlot)
         {
