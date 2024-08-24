@@ -3,7 +3,7 @@ using Extensions;
 using Grid;
 using Item.Data;
 using Item.Factory;
-using Item;
+using Level;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -14,12 +14,14 @@ namespace BoardSolvers
         private IGameBoard _gameBoard;
         private IItemFactory _itemFactory;
         private ItemsContainer _itemsContainer;
+        private ILevel _level;
 
-        public FallDownFill(IGameBoard gameBoard, IItemFactory itemFactory, ItemsContainer container)
+        public FallDownFill(IGameBoard gameBoard, IItemFactory itemFactory, ItemsContainer container, ILevel level)
         {
             _gameBoard = gameBoard;
             _itemFactory = itemFactory;
             _itemsContainer = container;
+            _level = level;
         }
         public void Fill(IEnumerable<IGridSlot> solvedGrids)
         {
@@ -67,8 +69,9 @@ namespace BoardSolvers
 
                 foreach (var emptyGrid in emptySlots)
                 {
-                    var randomItemData = _itemsContainer.GetRandomItemData();
-                    var item = _itemFactory.Get(ItemType.LinkItem);
+                    var levelData = _level.GetLevelData();
+                    var randomItemData = levelData.FallItems[Random.Range(0, levelData.FallItems.Count)];
+                    var item = _itemFactory.Get(randomItemData.Type);
                     var spawnGridPosition = new Vector2Int(grid.GridPosition.x, _gameBoard.Height);
                     var itemSpawnPos = _gameBoard.GridToWorldCenter(spawnGridPosition);
 
@@ -78,7 +81,7 @@ namespace BoardSolvers
                     emptyGrid.SetItem(item);
 
                     var distance = spawnGridPosition.y - emptyGrid.GridPosition.y;
-                    fillSeq.AppendCallback(()=> item.Transform.DOMove
+                    fillSeq.AppendCallback(() => item.Transform.DOMove
                         (_gameBoard.GridToWorldCenter(emptyGrid.GridPosition),
                             distance / _itemsContainer.Settings.FallSpeed)
                         .SetEase(_itemsContainer.Settings.FallEase))
@@ -103,7 +106,7 @@ namespace BoardSolvers
         private bool IsMoveable(IGridSlot slot, out Vector2Int pos)
         {
             var targetGrid = _gameBoard.GetGridSlot(slot.GridPosition.Down());
-            if(targetGrid == null || targetGrid.HasItem)
+            if (targetGrid == null || targetGrid.HasItem)
             {
                 pos = Vector2Int.zero;
                 return false;

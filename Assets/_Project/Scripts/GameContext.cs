@@ -3,6 +3,7 @@ using Grid;
 using Inputs;
 using Item.Data;
 using Item.Factory;
+using Level;
 using Link;
 using Service_Locator;
 using System.Collections.Generic;
@@ -16,10 +17,11 @@ namespace App
         [SerializeField] private GameBoard _gameBoard;
         [SerializeField] private InputSystem _inputSystem;
         [SerializeField] private LineDrawer _lineDrawer;
-        [field: SerializeField] public Gameplay Gameplay { get; private set;}
+        [field: SerializeField] public Gameplay Gameplay { get; private set; }
 
         [Header("Data")]
         [SerializeField] private ItemsContainer _itemContainer;
+        [SerializeField] private List<LevelData> _levelDatas = new();
 
         [Header("Item Factories")]
         [SerializeField] private List<ItemPoolFactory> _itemPoolFactories = new();
@@ -32,17 +34,19 @@ namespace App
         private IFill _fallDownFill;
         private IFill _onSetFill;
         private BoardSolver _boardSolver;
+        private LevelController _levelController;
 
         public void Construct()
         {
             _itemContainer.Construct();
             _lineDrawer.Construct();
 
+            _levelController = new LevelController(_levelDatas);
             _itemFactory = new RecyclableItemFactory(_itemPoolFactories);
             _tileFactory = new RecyclableTileFactory(_tilePoolFactories);
             _linkController = new LinkController(_gameBoard, _inputSystem, _lineDrawer);
-            _fallDownFill = new FallDownFill(_gameBoard, _itemFactory, _itemContainer);
-            _onSetFill = new OnSetFill(_gameBoard, _itemFactory, _tileFactory, _itemContainer);
+            _fallDownFill = new FallDownFill(_gameBoard, _itemFactory, _itemContainer, _levelController);
+            _onSetFill = new OnSetFill(_gameBoard, _itemFactory, _tileFactory, _levelController);
             _boardSolver = new BoardSolver(_linkController, _fallDownFill, _itemFactory, _onSetFill);
 
             Gameplay.Construct(_gameBoard, _boardSolver);

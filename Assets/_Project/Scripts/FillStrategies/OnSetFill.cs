@@ -2,6 +2,7 @@
 using Item;
 using Item.Data;
 using Item.Factory;
+using Level;
 using System.Collections.Generic;
 using Tile.Factory;
 namespace BoardSolvers
@@ -11,13 +12,13 @@ namespace BoardSolvers
         private IGameBoard _gameBoard;
         private IItemFactory _itemFactory;
         private ITileFactory _tileFactory;
-        private ItemsContainer _itemContainer;
-        public OnSetFill(IGameBoard gameBoard, IItemFactory itemFactory, ITileFactory tileFactory, ItemsContainer container)
+        private ILevel _level;
+        public OnSetFill(IGameBoard gameBoard, IItemFactory itemFactory, ITileFactory tileFactory, ILevel level)
         {
             _gameBoard = gameBoard;
             _itemFactory = itemFactory;
             _tileFactory = tileFactory;
-            _itemContainer = container;
+            _level = level;
         }
         public void Fill(IEnumerable<IGridSlot> solvedGrids)
         {
@@ -26,8 +27,9 @@ namespace BoardSolvers
                 for (int column = 0; column < _gameBoard.Height; column++)
                 {
                     var slot = _gameBoard[row, column];
-                    var itemData = _itemContainer.GetRandomItemData();
-                    var item = _itemFactory.Get(ItemType.LinkItem);
+                    var levelData = _level.GetLevelData();
+                    var levelGridData = levelData.GetGridData(slot.GridPosition);
+                    var item = _itemFactory.Get(levelGridData.ItemData.Type);
                     var tile = _tileFactory.Get(Tile.TileState.Available);
                     var targetPos = _gameBoard.GridToWorldCenter(slot.GridPosition);
 
@@ -35,7 +37,7 @@ namespace BoardSolvers
                     tile.Show();
 
                     item.SetPosition(targetPos);
-                    item.SetItemData(itemData);
+                    item.SetItemData(levelGridData.ItemData);
                     slot.SetItem(item);
                     item.Show();
                 }
