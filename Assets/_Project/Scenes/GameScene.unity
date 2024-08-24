@@ -815,6 +815,9 @@ MonoBehaviour:
   _lineDrawer: {fileID: 1619758702}
   <Gameplay>k__BackingField: {fileID: 1130788019}
   _itemContainer: {fileID: 11400000, guid: 895b8498d32af7c4498ea03fd7a6cd67, type: 2}
+  _levelDatas:
+  - {fileID: 11400000, guid: cdf6f829c19be2a4ebe58cadbf74e80c, type: 2}
+  _minLinkCount: 3
   _itemPoolFactories:
   - {fileID: 11400000, guid: 14531634351484c48872166497dfa637, type: 2}
   _tilePoolFactories:
