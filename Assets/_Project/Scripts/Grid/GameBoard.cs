@@ -30,6 +30,7 @@ namespace Grid
         public void DeInit()
         {
             _gridSlots = null;
+            GridSlots1D.Clear();
         }
         private void CreateGrid()
         {
