@@ -1,57 +1,72 @@
-﻿using Extensions;
+﻿using App;
+using Extensions;
 using Grid;
 using Item.Factory;
 using Link;
 using System.Collections.Generic;
-using System.Linq;
+using Tile.Factory;
 using UnityEngine;
 namespace BoardSolvers
 {
     public class BoardSolver
     {
-        private ILinkController _linkController;
-        private IFill _fallDownFill;
-        private IFill _onSetFill;
-        private IItemFactory _itemFactory;
-        private IGameBoard _gameBoard;
-        private BoardShuffler _boardShuffler;
+        private readonly IFill _fallDownFill;
+        private readonly IFill _onSetFill;
+        private readonly IItemFactory _itemFactory;
+        private readonly ITileFactory _tileFactory;
+        private readonly IGameBoard _gameBoard;
+        private readonly BoardShuffler _boardShuffler;
 
         private HashSet<IGridSlot>[] _links;
         private int _matchIndex;
+        private readonly int _minLinkCount;
 
-        public BoardSolver(IGameBoard gameBoard, ILinkController linkSolver, IFill fill, IItemFactory itemFactory, IFill onSetFill)
+        public BoardSolver(IGameContext gameContext)
         {
-            _linkController = linkSolver;
-            _fallDownFill = fill;
-            _itemFactory = itemFactory;
-            _onSetFill = onSetFill;
-            _gameBoard = gameBoard;
-            _boardShuffler = new BoardShuffler(gameBoard);
+            _fallDownFill = new FallDownFill(gameContext);
+            _onSetFill = new OnSetFill(gameContext);
+            _itemFactory = gameContext.Locator.Get<IItemFactory>();
+            _gameBoard = gameContext.Locator.Get<IGameBoard>();
+            _boardShuffler = new BoardShuffler(_gameBoard);
+            _tileFactory = gameContext.Locator.Get<ITileFactory>();
+            _minLinkCount = gameContext.Locator.Get<LinkData>().LinkCount;
         }
         public void Init()
         {
-            _linkController.Init();
             _onSetFill.Fill();
             LinkCheckAndShuffleRecursive();
-            AddEvents();
         }
         public void DeInit()
         {
-            RemoveEvents();
-            _linkController.DeInit();
+            ClearAllItems();
         }
-        
+        public void FillBoard(IEnumerable<IGridSlot> gridSlots)
+        {
+            ClearLinkedItems(gridSlots);
+            _fallDownFill.Fill(gridSlots, OnFillCompleted);
+        }
         private void ClearLinkedItems(IEnumerable<IGridSlot> gridSlots)
         {
             foreach (var slot in gridSlots)
             {
                 var item = slot.Item;
                 slot.Clear();
-                item.Pop(onComplete:() =>
+                item.Pop(onComplete: () =>
                 {
                     item.Hide();
                     _itemFactory.Release(item);
                 });
+            }
+        }
+        private void ClearAllItems()
+        {
+            foreach (var slot in _gameBoard.GridSlots1D)
+            {
+                slot.Item.Hide();
+                slot.Tile.Hide();
+                _tileFactory.Release(slot.Tile);
+                _itemFactory.Release(slot.Item);
+                slot.Clear();
             }
         }
         private bool AnyLinkOnBoard()
@@ -67,11 +82,14 @@ namespace BoardSolvers
                     {
                         continue;
                     }
+
                     if (_gameBoard[direction].Item.ID != slot.Item.ID)
                     {
                         continue;
                     }
+
                     int currentIndex;
+
                     if (AnyExistInLinks(_gameBoard[direction], out var index))
                     {
                         AddLink(slot.GridPosition, direction, index);
@@ -83,7 +101,8 @@ namespace BoardSolvers
                         currentIndex = _matchIndex;
                         _matchIndex++;
                     }
-                    if (_links[currentIndex].Count >= _linkController.MinLinkCount)
+
+                    if (_links[currentIndex].Count >= _minLinkCount)
                     {
                         return true;
                     }
@@ -91,15 +110,6 @@ namespace BoardSolvers
                 }
             }
             return false;
-        }
-        private void AddLink(Vector2Int current, Vector2Int next, int index)
-        {
-            if (_links[index] == null)
-            {
-                _links[index] = new HashSet<IGridSlot>();
-            }
-            _links[index].Add(_gameBoard[current]);
-            _links[index].Add(_gameBoard[next]);
         }
         private bool AnyExistInLinks(IGridSlot gridSlot, out int index)
         {
@@ -118,6 +128,7 @@ namespace BoardSolvers
                     {
                         continue;
                     }
+
                     if (slot.Item.ID != gridSlot.Item.ID)
                     {
                         continue;
@@ -130,6 +141,15 @@ namespace BoardSolvers
             index = -1;
             return false;
         }
+        private void AddLink(Vector2Int current, Vector2Int next, int index)
+        {
+            if (_links[index] == null)
+            {
+                _links[index] = new HashSet<IGridSlot>();
+            }
+            _links[index].Add(_gameBoard[current]);
+            _links[index].Add(_gameBoard[next]);
+        }
         private void LinkCheckAndShuffleRecursive()
         {
             if (!AnyLinkOnBoard())
@@ -140,26 +160,13 @@ namespace BoardSolvers
                 });
             }
         }
-        private List<Vector2Int> SearchDirections(Vector2Int slot)
-        {
-            return new() { slot.Up(), slot.Right(), slot.UpRight(), slot.DownRight() };
-        }
         private void OnFillCompleted()
         {
             LinkCheckAndShuffleRecursive();
         }
-        private void OnItemsLinkedHandler(IEnumerable<IGridSlot> gridSlots)
+        private List<Vector2Int> SearchDirections(Vector2Int slot)
         {
-            ClearLinkedItems(gridSlots);
-            _fallDownFill.Fill(gridSlots, OnFillCompleted);
-        }
-        private void AddEvents()
-        {
-            _linkController.OnItemsLinked += OnItemsLinkedHandler;
-        }
-        private void RemoveEvents()
-        {
-            _linkController.OnItemsLinked -= OnItemsLinkedHandler;
+            return new() { slot.Up(), slot.Right(), slot.UpRight(), slot.DownRight() };
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Grid;
+﻿using App;
+using Grid;
 using Item;
 using Item.Data;
 using Item.Factory;
@@ -14,12 +15,12 @@ namespace BoardSolvers
         private IItemFactory _itemFactory;
         private ITileFactory _tileFactory;
         private ILevel _level;
-        public OnSetFill(IGameBoard gameBoard, IItemFactory itemFactory, ITileFactory tileFactory, ILevel level)
+        public OnSetFill(IGameContext gameContext)
         {
-            _gameBoard = gameBoard;
-            _itemFactory = itemFactory;
-            _tileFactory = tileFactory;
-            _level = level;
+            _gameBoard = gameContext.Locator.Get<IGameBoard>();
+            _itemFactory = gameContext.Locator.Get<IItemFactory>();
+            _tileFactory = gameContext.Locator.Get<ITileFactory>();
+            _level = gameContext.Locator.Get<ILevel>();
         }
         public void Fill(IEnumerable<IGridSlot> solvedGrids, Action onCompleted)
         {
@@ -40,6 +41,7 @@ namespace BoardSolvers
                     item.SetPosition(targetPos);
                     item.SetItemData(levelGridData.ItemData);
                     slot.SetItem(item);
+                    slot.SetTile(tile);
                     item.Show();
                 }
             }

@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using App;
+using DG.Tweening;
 using Extensions;
 using Grid;
 using Item.Data;
@@ -15,17 +16,17 @@ namespace BoardSolvers
 {
     public class FallDownFill : IFill
     {
-        private IGameBoard _gameBoard;
-        private IItemFactory _itemFactory;
-        private ItemsContainer _itemsContainer;
-        private ILevel _level;
+        private readonly IGameBoard _gameBoard;
+        private readonly IItemFactory _itemFactory;
+        private readonly ItemsContainer _itemsContainer;
+        private readonly ILevel _level;
 
-        public FallDownFill(IGameBoard gameBoard, IItemFactory itemFactory, ItemsContainer container, ILevel level)
+        public FallDownFill(IGameContext gameContext)
         {
-            _gameBoard = gameBoard;
-            _itemFactory = itemFactory;
-            _itemsContainer = container;
-            _level = level;
+            _gameBoard = gameContext.Locator.Get<IGameBoard>();
+            _itemFactory = gameContext.Locator.Get<IItemFactory>();
+            _itemsContainer = gameContext.Locator.Get<ItemsContainer>();
+            _level = gameContext.Locator.Get<ILevel>();
         }
         public void Fill(IEnumerable<IGridSlot> solvedGrids, Action onCompleted)
         {

@@ -8,56 +8,61 @@ using Link;
 using Service_Locator;
 using System.Collections.Generic;
 using Tile.Factory;
+using UI;
 using UnityEngine;
 namespace App
 {
-    public class GameContext : MonoBehaviour
+    public class GameContext : MonoBehaviour, IGameContext
     {
         [Header("Scene References")]
+        [SerializeField] private GameManager _gameManager;
         [SerializeField] private GameBoard _gameBoard;
         [SerializeField] private InputSystem _inputSystem;
         [SerializeField] private LineDrawer _lineDrawer;
-        [field: SerializeField] public Gameplay Gameplay { get; private set; }
+        [SerializeField] private UIManager _uiManager;
 
         [Header("Data")]
         [SerializeField] private ItemsContainer _itemContainer;
         [SerializeField] private List<LevelData> _levelDatas = new();
-        [SerializeField] private int _minLinkCount;
+        [SerializeField] private LinkData _linkData;
 
         [Header("Item Factories")]
         [SerializeField] private List<ItemPoolFactory> _itemPoolFactories = new();
         [Header("Tile Factories")]
         [SerializeField] private List<TilePoolFactory> _tilePoolFactories = new();
 
-        private IItemFactory _itemFactory;
-        private ITileFactory _tileFactory;
-        private ILinkController _linkController;
-        private IFill _fallDownFill;
-        private IFill _onSetFill;
+        public IServiceLocator Locator { get; private set; }
+
+        private Gameplay _gameplay;
         private BoardSolver _boardSolver;
         private LevelController _levelController;
 
-        public void Construct()
+        private void Awake()
         {
+            Locator = new ServiceLocator();
+
             _itemContainer.Construct();
             _lineDrawer.Construct();
-
+            _uiManager.Construct(this);
             _levelController = new LevelController(_levelDatas);
-            _itemFactory = new RecyclableItemFactory(_itemPoolFactories);
-            _tileFactory = new RecyclableTileFactory(_tilePoolFactories);
-            _linkController = new LinkController(_gameBoard, _inputSystem, _lineDrawer, _minLinkCount);
-            _fallDownFill = new FallDownFill(_gameBoard, _itemFactory, _itemContainer, _levelController);
-            _onSetFill = new OnSetFill(_gameBoard, _itemFactory, _tileFactory, _levelController);
-            _boardSolver = new BoardSolver(_gameBoard, _linkController, _fallDownFill, _itemFactory, _onSetFill);
 
-            Gameplay.Construct(_gameBoard, _boardSolver, _levelController);
+            RegisterInstances();
+
+            _boardSolver = new BoardSolver(this);
+            _gameplay = new Gameplay(_gameBoard, _boardSolver, this);
+
+            _gameManager.Construct(_gameplay, _uiManager, _levelController);
         }
-        public void RegisterInstances()
+        private void RegisterInstances()
         {
-            ServiceProvider.Instance
-                .Register<IGameBoard>(_gameBoard)
-                .Register<IInputSystem>(_inputSystem)
-                .Register(_itemFactory);
+            Locator.Register<ILevel>(_levelController);
+            Locator.Register<IGameBoard>(_gameBoard);
+            Locator.Register<IItemFactory>(new RecyclableItemFactory(_itemPoolFactories));
+            Locator.Register<ITileFactory>(new RecyclableTileFactory(_tilePoolFactories));
+            Locator.Register<IInputSystem>(_inputSystem);
+            Locator.Register(_linkData);
+            Locator.Register(_itemContainer);
+            Locator.Register(_lineDrawer);
         }
     }
 }
