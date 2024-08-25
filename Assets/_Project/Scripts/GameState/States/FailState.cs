@@ -18,12 +18,12 @@ namespace GameStates
         }
         public void Init()
         {
-            EventBus<Events.RestartLevel>.RegisterEvent(Events.LEVEL_FAILED, OnRestartClicked);
+            EventBus<Events.RestartLevel>.RegisterEvent(Events.RESTART_LEVEL, OnRestartClicked);
             _uiManager.ShowView(ViewTypes.Fail);
         }
         public void DeInit()
         {
-            EventBus<Events.RestartLevel>.DeRegisterEvent(Events.NEXT_LEVEL, OnRestartClicked);
+            EventBus<Events.RestartLevel>.DeRegisterEvent(Events.RESTART_LEVEL, OnRestartClicked);
         }
         private void OnRestartClicked(Events.RestartLevel args)
         {
