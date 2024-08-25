@@ -9,8 +9,8 @@ namespace Level
     public class LevelData : ScriptableObject
     {
         public List<ItemData> FallItems = new();
-        public List<LevelGoalData> Goals = new();
         public List<LevelGridData> GridDatas = new();
+        public int Score;
         public int MoveCount;
         public int GridWidth;
         public int GridHeight;
@@ -52,11 +52,5 @@ namespace Level
     {
         public ItemData ItemData;
         public Vector2Int GridPosition;
-    }
-    [Serializable]
-    public struct LevelGoalData
-    {
-        public ItemData ItemData;
-        public int Goal;
     }
 }
