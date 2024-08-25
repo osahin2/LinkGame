@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using App;
+using System.Collections.Generic;
 using UnityEngine;
 namespace UI
 {
@@ -7,34 +8,38 @@ namespace UI
         [SerializeField] private List<UIView> _uiScreens = new();
         [SerializeField] private AlphaTransition _alphaTransition;
 
+        private IGameContext _gameContext;
+
         public AlphaTransition AlphaTransition => _alphaTransition;
 
-        private readonly Dictionary<ViewTypes, UIView> _screenDict = new();
+        private readonly Dictionary<ViewTypes, UIView> _viewDict = new();
 
-        public void Construct()
+        public void Construct(IGameContext gameContext)
         {
-            SetScreenDictionary();
+            _gameContext = gameContext;
+            SetViewDictionary();
         }
-        private void SetScreenDictionary()
+        private void SetViewDictionary()
         {
-            foreach (var screen in _uiScreens)
+            foreach (var view in _uiScreens)
             {
-                _screenDict.Add(screen.ViewType, screen);
+                view.Construct(_gameContext);
+                _viewDict.Add(view.ViewType, view);
             }
         }
-        public void ShowView(ViewTypes state)
+        public void ShowView(ViewTypes viewTypes)
         {
-            GetViewFromDict(state).Show();
+            GetViewFromDict(viewTypes).Show();
         }
-        public void HideView(ViewTypes state)
+        public void HideView(ViewTypes viewTypes)
         {
-            GetViewFromDict(state).Hide();
+            GetViewFromDict(viewTypes).Hide();
         }
-        private UIView GetViewFromDict(ViewTypes state)
+        private UIView GetViewFromDict(ViewTypes view)
         {
-            if (!_screenDict.TryGetValue(state, out var screen))
+            if (!_viewDict.TryGetValue(view, out var screen))
             {
-                throw new KeyNotFoundException($"{GetType().Name}: Screen Not Found In Dictionary");
+                throw new KeyNotFoundException($"{GetType().Name}: {view} View Not Found In Dictionary");
             }
             return screen;
         }

@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using Event;
 using EventBusSystem;
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using App;
+using System;
 using UnityEngine;
 namespace UI
 {
@@ -6,7 +7,12 @@ namespace UI
     {
         [SerializeField] private ViewTypes _viewType;
 
+        protected IGameContext GameContext;
         public ViewTypes ViewType => _viewType;
+        public void Construct(IGameContext gameContext)
+        {
+            GameContext = gameContext;
+        }
         public virtual void Show()
         {
             AddEvents();
