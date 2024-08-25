@@ -2199,6 +2199,7 @@ MonoBehaviour:
   _uiManager: {fileID: 680163476}
   _itemContainer: {fileID: 11400000, guid: 895b8498d32af7c4498ea03fd7a6cd67, type: 2}
   _levelDatas:
+  - {fileID: 11400000, guid: b5c6090add31df249870a766fc658fbd, type: 2}
   - {fileID: 11400000, guid: cc163fee71373f94dad1861344932689, type: 2}
   - {fileID: 11400000, guid: cdf6f829c19be2a4ebe58cadbf74e80c, type: 2}
   _linkData: {fileID: 11400000, guid: 83f29842d55985642832f6cfb8fffb0a, type: 2}

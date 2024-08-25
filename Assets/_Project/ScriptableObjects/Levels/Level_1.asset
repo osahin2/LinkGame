@@ -146,7 +146,7 @@ MonoBehaviour:
     GridPosition: {x: 7, y: 6}
   - ItemData: {fileID: 11400000, guid: d3e6b801a33b5be4d92255e4abf17c07, type: 2}
     GridPosition: {x: 7, y: 7}
-  Score: 50
-  MoveCount: 20
+  Score: 350
+  MoveCount: 15
   GridWidth: 8
   GridHeight: 8

@@ -17,11 +17,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d15069479b58f6e43ae6b995abe5ba74, type: 2}
   - {fileID: 11400000, guid: 5c194159f3911ef4394f99bd0ca3a76c, type: 2}
   - {fileID: 11400000, guid: 3c72fe874c6a9ba49b4c089f2e11743a, type: 2}
-  Goals:
-  - ItemData: {fileID: 11400000, guid: d3e6b801a33b5be4d92255e4abf17c07, type: 2}
-    Goal: 10
-  - ItemData: {fileID: 11400000, guid: d15069479b58f6e43ae6b995abe5ba74, type: 2}
-    Goal: 10
   GridDatas:
   - ItemData: {fileID: 11400000, guid: d3e6b801a33b5be4d92255e4abf17c07, type: 2}
     GridPosition: {x: 0, y: 0}
@@ -41,6 +36,7 @@ MonoBehaviour:
     GridPosition: {x: 2, y: 1}
   - ItemData: {fileID: 11400000, guid: 5c194159f3911ef4394f99bd0ca3a76c, type: 2}
     GridPosition: {x: 2, y: 2}
-  MoveCount: 20
+  Score: 50
+  MoveCount: 8
   GridWidth: 3
   GridHeight: 3
