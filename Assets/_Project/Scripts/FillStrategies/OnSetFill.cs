@@ -11,10 +11,10 @@ namespace BoardSolvers
 {
     public class OnSetFill : IFill
     {
-        private IGameBoard _gameBoard;
-        private IItemFactory _itemFactory;
-        private ITileFactory _tileFactory;
-        private ILevel _level;
+        private readonly IGameBoard _gameBoard;
+        private readonly IItemFactory _itemFactory;
+        private readonly ITileFactory _tileFactory;
+        private readonly ILevel _level;
         public OnSetFill(IGameContext gameContext)
         {
             _gameBoard = gameContext.Locator.Get<IGameBoard>();

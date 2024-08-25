@@ -15,18 +15,18 @@ namespace Link
         private readonly IInputSystem _inputSystem;
         private readonly IGameBoard _gameBoard;
         private readonly LineDrawer _lineDrawer;
-        public int MinLinkCount { get; }
 
         private LinkedList<IGridSlot> _linkedItems = new();
         private LinkedListNode<IGridSlot> _currentNode = null;
         private int _linkCounter;
+        private int _minLinkCount;
         private bool _canDrag;
         public LinkController(IGameContext gameContext)
         {
             _gameBoard = gameContext.Locator.Get<IGameBoard>();
             _inputSystem = gameContext.Locator.Get<IInputSystem>();
             _lineDrawer = gameContext.Locator.Get<LineDrawer>();
-            MinLinkCount = gameContext.Locator.Get<LinkData>().LinkCount;
+            _minLinkCount = gameContext.Locator.Get<LinkData>().LinkCount;
         }
         public void Init()
         {
@@ -125,7 +125,7 @@ namespace Link
         }
         private void OnPointerUpHandler(object sender, InputEventArgs args)
         {
-            if (_linkCounter >= MinLinkCount)
+            if (_linkCounter >= _minLinkCount)
             {
                 OnItemsLinked?.Invoke(_linkedItems);
             }

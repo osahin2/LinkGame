@@ -15,8 +15,6 @@ namespace Item
         public int ID {  get; private set; }
 
         private Tween _scaleUpTween;
-        private Tween _scaleDownTween;
-        private Tween _popTween;
 
         public virtual void SetItemData(ItemData itemData)
         {
@@ -46,14 +44,14 @@ namespace Item
         public virtual void DeSelect()
         {
             _scaleUpTween?.Kill();
-            _scaleDownTween = transform.DOScale(Vector3.one, Settings.LinkedAnimTime)
+            transform.DOScale(Vector3.one, Settings.LinkedAnimTime)
                 .SetEase(Ease.InBack);
         }
 
         public virtual void Pop(Action onComplete = null)
         {
             _scaleUpTween?.Kill();
-            _popTween = transform.DOScale(Vector3.zero, Settings.LinkedAnimTime)
+            transform.DOScale(Vector3.zero, Settings.LinkedAnimTime)
                 .SetEase(Ease.InBack)
                 .OnComplete(() =>
                 {

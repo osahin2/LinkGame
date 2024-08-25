@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using Grid;
 using System;
-using UnityEngine;
 using Random = UnityEngine.Random;
 namespace BoardSolvers
 {
@@ -14,7 +13,11 @@ namespace BoardSolvers
         }
         public void Shuffle(Action onShuffled = null)
         {
-            var seq = DOTween.Sequence();
+            ShuffleSlots();
+            MoveItemsToSlot(onShuffled);
+        }
+        private void ShuffleSlots()
+        {
             for (int i = 0; i < _gameBoard.GridSlots1D.Count - 1; i++)
             {
                 var pos = Random.Range(i, _gameBoard.GridSlots1D.Count);
@@ -26,6 +29,10 @@ namespace BoardSolvers
                 _gameBoard.GridSlots1D[pos].Clear();
                 _gameBoard.GridSlots1D[pos].SetItem(shuffleItem);
             }
+        }
+        private void MoveItemsToSlot(Action onShuffled = null)
+        {
+            var seq = DOTween.Sequence();
             for (int i = 0; i < _gameBoard.GridSlots1D.Count; i++)
             {
                 var slot = _gameBoard.GridSlots1D[i];

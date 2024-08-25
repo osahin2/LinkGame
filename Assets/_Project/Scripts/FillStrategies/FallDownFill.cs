@@ -49,10 +49,13 @@ namespace BoardSolvers
                     {
                         continue;
                     }
+
                     var item = gridSlot.Item;
                     gridSlot.Clear();
                     _gameBoard[targetPos].SetItem(item);
+
                     var distance = gridSlot.GridPosition.y - targetPos.y;
+
                     fallSeq.Join(item.Transform.DOMove
                         (_gameBoard.GridToWorldCenter(targetPos),
                             distance / _itemsContainer.Settings.FallSpeed)
@@ -86,6 +89,7 @@ namespace BoardSolvers
                     emptyGrid.SetItem(item);
 
                     var distance = spawnGridPosition.y - emptyGrid.GridPosition.y;
+
                     fillSeq.AppendCallback(() => item.Transform.DOMove
                         (_gameBoard.GridToWorldCenter(emptyGrid.GridPosition),
                             distance / _itemsContainer.Settings.FallSpeed)
