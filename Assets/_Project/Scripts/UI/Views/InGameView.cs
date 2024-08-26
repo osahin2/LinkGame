@@ -11,6 +11,7 @@ namespace UI
     {
         [SerializeField] private TextMeshProUGUI _moveText;
         [SerializeField] private TextMeshProUGUI _scoreText;
+        [SerializeField] private TextMeshProUGUI _targetScoreText;
         [SerializeField] private float _moveTextAnimScale = 1.05f;
         [SerializeField] private float _scaleAnimTime = .25f;
         [SerializeField] private float _scoreDecreaseTime = .35f;
@@ -25,7 +26,8 @@ namespace UI
         {
             base.Show();
             SetMoveText(LevelData.MoveCount);
-            SetScoreText(LevelData.Score);
+            SetScoreText(0);
+            _targetScoreText.text = LevelData.Score.ToString();
             gameObject.SetActive(true);
         }
         public override void Hide()

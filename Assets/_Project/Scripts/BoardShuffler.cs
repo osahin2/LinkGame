@@ -6,7 +6,7 @@ namespace BoardSolvers
 {
     public class BoardShuffler
     {
-        IGameBoard _gameBoard;
+        private readonly IGameBoard _gameBoard;
         public BoardShuffler(IGameBoard gameBoard)
         {
             _gameBoard = gameBoard;

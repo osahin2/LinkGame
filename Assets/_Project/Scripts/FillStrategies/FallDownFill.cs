@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace BoardSolvers
+namespace FillStrategies
 {
     public class FallDownFill : IFill
     {

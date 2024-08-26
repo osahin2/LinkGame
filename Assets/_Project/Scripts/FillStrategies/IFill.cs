@@ -1,7 +1,7 @@
 ﻿using Grid;
 using System;
 using System.Collections.Generic;
-namespace BoardSolvers
+namespace FillStrategies
 {
     public interface IFill
     {

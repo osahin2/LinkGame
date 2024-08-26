@@ -10,12 +10,11 @@ namespace App
         public event Action OnScoreReachedZero;
 
         private ILevel _levelController;
-
         public bool IsScoreCompleted { get; private set; }
 
         private int _moveCount;
         private int _scoreCount;
-
+        private int _targetScore;
         public LevelConditions(ILevel level)
         {
             _levelController = level;
@@ -24,13 +23,14 @@ namespace App
         {
             var levelData = _levelController.GetLevelData();
             _moveCount = levelData.MoveCount;
-            _scoreCount = levelData.Score;
+            _targetScore = levelData.Score;
+            _scoreCount = 0;
             IsScoreCompleted = false;
         }
         public void SetConditions(int score)
         {
             var oldScore = _scoreCount;
-            DecreaseScore(score);
+            IncreaseScore(score);
             DecreaseMove();
 
             EventBus<Events.LinkCompleted>.TriggerEvent(Events.LINK_COMPLETED,
@@ -44,20 +44,20 @@ namespace App
                 OnMoveReachedZero?.Invoke();
             }
         }
-        private void DecreaseScore(int score)
+        private void IncreaseScore(int score)
         {
             if (IsScoreCompleted)
             {
                 return;
             }
-            if (_scoreCount - score <= 0)
+            if (_scoreCount + score >= _targetScore)
             {
                 IsScoreCompleted = true;
-                _scoreCount = 0;
+                _scoreCount = _targetScore;
                 OnScoreReachedZero?.Invoke();
                 return;
             }
-            _scoreCount -= score;
+            _scoreCount += score;
         }
     }
 }

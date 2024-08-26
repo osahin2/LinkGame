@@ -7,7 +7,7 @@ using Level;
 using System;
 using System.Collections.Generic;
 using Tile.Factory;
-namespace BoardSolvers
+namespace FillStrategies
 {
     public class OnSetFill : IFill
     {
