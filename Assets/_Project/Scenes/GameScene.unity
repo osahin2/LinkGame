@@ -312,7 +312,7 @@ MonoBehaviour:
   _viewType: 0
   _moveText: {fileID: 1895489058}
   _scoreText: {fileID: 594575993}
-  _targetScoreText: {fileID: 0}
+  _targetScoreText: {fileID: 873581132}
   _moveTextAnimScale: 1.05
   _scaleAnimTime: 0.25
   _scoreDecreaseTime: 0.35
